@@ -27,7 +27,9 @@ public class App{
                         System.err.println("Fail : cannot connet to "+url);
                     }
                     else{
+                        FirebaseDatabase.getInstance().getReference().child("URL_LIST/1/DATA").setValueAsync(elements.toString());
                         System.out.println("Success : connet to "+url);
+                        System.out.println(elements.toString());
                     }
                 }
                 else{
