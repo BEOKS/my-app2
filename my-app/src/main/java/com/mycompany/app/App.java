@@ -165,7 +165,7 @@ public class App{
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String url=(String)dataSnapshot.getKey();
                 url=parseDatabaseKeyToURL(url);
-                System.out.println("onChildAdded : "+url);
+                System.out.println("onChildRemoved : "+url);
                 urlArrayList.remove(url);
                 elementMap.remove(url);
             }
