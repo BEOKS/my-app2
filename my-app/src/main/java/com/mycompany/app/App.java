@@ -13,7 +13,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +29,16 @@ public class App{
 	// write your code here
         try {
             while (true) {
+                long time = System.currentTimeMillis();
+                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                String str = dayTime.format(new Date(time));
+
                 if(urlArrayList.size()!=0){
                     for(int i=0;i<urlArrayList.size();i++){
                         String url=urlArrayList.get(i);
                         Elements elements=getTableElements(getDocument(url));
                         if(elements==null){
-                            System.err.println("Fail : cannot connet to "+url);
+                            System.err.println(str+" Fail : cannot connet to "+url);
                         }
                         else{
                             if(!equalElements(elements,elementMap.get(url))){
@@ -51,14 +57,14 @@ public class App{
                                     }
                                 });
                             }
-                            System.out.println("Success : connet to "+url);
+                            System.out.println(str+" Success : connet to "+url);
                         }
                     }
                 }
                 else{
-                    System.out.println("urlArrayList is null");
+                    System.out.println(str+" urlArrayList is null");
                 }
-                Thread.sleep(5000);
+                Thread.sleep(60000);
             }
         }
         catch (InterruptedException e){
