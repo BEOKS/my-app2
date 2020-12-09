@@ -51,7 +51,7 @@
             <configuration>
                 <archive>
                     <manifest>
-                        <mainClass>fully.qualified.MainClass</mainClass>
+                        <mainClass>com.mycompany.app.App</mainClass>
                     </manifest>
                 </archive>
                 <descriptorRefs>
