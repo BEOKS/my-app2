@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,19 +30,17 @@ public class App{
 	// write your code here
         try {
             while (true) {
-                long time = System.currentTimeMillis();
-                SimpleDateFormat dayTime = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-                String str = dayTime.format(new Date(time));
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
                 if(urlArrayList.size()!=0){
                     for(int i=0;i<urlArrayList.size();i++){
                         String url=urlArrayList.get(i);
                         Elements elements=getTableElements(getDocument(url));
                         if(elements==null){
-                            System.err.println(str+" Fail : cannot connet to "+url);
+                            System.err.println(timestamp+" Fail : cannot connet to "+url);
                         }
                         else{
-                            if(!equalElements(elements,elementMap.get(url))){
+                            if(!equalElements(elements,url)){
                                 final String temp_url=parseURLtoDatabaseKey(urlArrayList.get(i));
                                 FirebaseDatabase.getInstance().getReference(temp_url).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -57,12 +56,12 @@ public class App{
                                     }
                                 });
                             }
-                            System.out.println(str+" Success : connet to "+url);
+                            System.out.println(timestamp+" Success : connet to "+url);
                         }
                     }
                 }
                 else{
-                    System.out.println(str+" urlArrayList is null");
+                    System.out.println(timestamp+" urlArrayList is null");
                 }
                 Thread.sleep(60000);
             }
@@ -71,7 +70,7 @@ public class App{
             e.printStackTrace();
         }
     }
-    public static boolean equalElements(Elements updatedElements, Elements pastElements){
+    public static boolean equalElements(Elements updatedElements, String url){
         int maxIndex=1;
         String maxString="";
         Elements tr_updatedElements=updatedElements.get(0).getElementsByTag("tr");
@@ -89,12 +88,12 @@ public class App{
             }
         }
         //compare
-        Elements tr_pastElements=pastElements.get(0).getElementsByTag("tr");
-        for(int i=1;i<tr_updatedElements.size()&&i<tr_pastElements.size();i++){
+        Elements tr_pastElements=elementMap.get(url).get(0).getElementsByTag("tr");
+        for(int i=1;i<tr_updatedElements.size()&&i<tr_pastElements.size()&&i<10;i++){
             String a=tr_updatedElements.get(i).select("th,td").get(maxIndex).text(),
                     b=tr_pastElements.get(i).select("th,td").get(maxIndex).text();
             if(!a.equals(b)){
-                pastElements=updatedElements;
+                elementMap.put(url,updatedElements);
                 return false;
             }
         }
